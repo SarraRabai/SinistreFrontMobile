@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app/api/client.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1749048571093,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1749682032690,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,9 +2,9 @@\n import cache from \"../utility/cache\";\r\n import authStorage from \"../auth/storage\";\r\n \r\n const apiClient = create({\r\n-  baseURL: \"http://192.168.1.11:9000/api\",\r\n+  baseURL: \"http://192.168.1.13:9000/api\",\r\n   timeout: 90000,\r\n });\r\n \r\n const get = apiClient.get;\r\n"
+                }
+            ],
+            "date": 1749048571093,
+            "name": "Commit-0",
+            "content": "import { create } from \"apisauce\";\r\nimport cache from \"../utility/cache\";\r\nimport authStorage from \"../auth/storage\";\r\n\r\nconst apiClient = create({\r\n  baseURL: \"http://192.168.1.11:9000/api\",\r\n  timeout: 90000,\r\n});\r\n\r\nconst get = apiClient.get;\r\n\r\napiClient.addAsyncRequestTransform(async (request) => {\r\n  const authToken = await authStorage.getToken();\r\n\r\n  if (!authToken) return;\r\n  request.headers[\"x-auth-token\"] = authToken;\r\n});\r\n\r\napiClient.get = async (url, params, axiosConfig) => {\r\n  //before\r\n\r\n  const response = await get(url, params, axiosConfig); //this fct return a promise\r\n\r\n  if (response.ok) {\r\n    return response;\r\n  }\r\n  //the call of server failed\r\n  const data = await cache.get(url);\r\n  return data ? { ok: true, data } : response; //return object with 2 properties\r\n  //original response object of why the server is failed\r\n};\r\n\r\nexport default apiClient;\r\n"
+        }
+    ]
+}
